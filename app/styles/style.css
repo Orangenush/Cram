@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Poiret One';
+  src: url(../fonts/PoiretOne-Regular.ttf);
+}
+
 header{
   margin-top: 0;
   width: 100%;
@@ -30,6 +35,28 @@ header>ul>li>div{
   height: 16px;
   border-radius: 50%;
   -webkit-app-region: no-drag;
+}
+
+.greating {
+  font-family: 'Poiret One', cursive;
+  margin: 0;
+  padding-top: 20px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  color: #FFF;
+  background-color: #e67e22;
+}
+
+.login {
+  margin-top: 75px;
+}
+
+.reg-log-buttons {
+  position: absolute;
+  margin-left: 60px;
 }
 
 #windowControlClose{
