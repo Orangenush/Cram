@@ -7,7 +7,12 @@
   <link rel="stylesheet" href="../styles/bootstrap.min.css">
   <link rel="stylesheet" href="../styles/style.css">
   <script src="../scripts/jquery.min.js"></script>
-
+  <script src="../scripts/bootstrap.min.js"></script>
+  <script src="../scripts/angular.min.js"></script>
+  <script src="../scripts/angular-route.min.js"></script>
+  <script src="../scripts/angular-resource.min.js"></script>
+  <script src="../scripts/firebase.js"></script>
+  <script src="../scripts/firebase-simple-login.js"></script>
   <script>
     var nw = require('nw.gui');
     var win = nw.Window.get();
@@ -30,11 +35,11 @@
       <form role="form">
         <div class="form-group">
           <label for="email">Login:</label>
-          <input type="email" class="form-control" id="email" placeholder="Enter login">
+          <input type="email" class="form-control" name="email" placeholder="Enter login">
         </div>
         <div class="form-group">
           <label for="pwd">Password:</label>
-          <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+          <input type="password" class="form-control" name="pwd" placeholder="Enter password">
         </div>
         <div class="checkbox">
           <label><input type="checkbox"> Remember me</label>
@@ -74,43 +79,37 @@
         win.isMaximized = false;
     });*/
 
-    function getXmlHttp(){
-    	try {
-    		return new ActiveXObject("Msxml2.XMLHTTP");
-    	} catch (e) {
-    		try {
-    			return new ActiveXObject("Microsoft.XMLHTTP");
-    		} catch (ee) {
-    		}
-    	}
-    	if (typeof XMLHttpRequest!='undefined') {
-    		return new XMLHttpRequest();
-    	}
-    }
+    var myRef = new Firebase("https://cram.firebaseio.com");
+    var auth = new FirebaseSimpleLogin(myRef, function(error, user) {
+    if (error) {
+        if (error.code == 'INVALID_EMAIL') {
+            alert('Please enter a valid email address');
+        } else if (error.code == 'INVALID_PASSWORD' || error.code == 'INVALID_USER') {
+            alert('Invalid Email or Password');
+        } else {
+            alert("Something went wrong");
+        }
+    } else if (user) {
 
-    function getUrl(url, cb) {
-    	var xmlhttp = getXmlHttp();
-    	xmlhttp.open("GET", url+'?r='+Math.random());
-    	xmlhttp.onreadystatechange = function() {
-    		if (xmlhttp.readyState == 4) {
-    			cb(
-    			xmlhttp.status,
-    			xmlhttp.getAllResponseHeaders(),
-    			xmlhttp.responseText
-    			);
-    		}
-    	}
-    	xmlhttp.send(null);
-    }
+        if (location.href.indexOf('/home') < 0)
+            window.location.assign('http://localhost:3000/home');
 
-    document.getElementById('subm').onclick = function()
-    {
-      getUrl('http://javascript.ru/forum/url',function(status,headers,text){
-        alert(status);
-      });
-    };
+        if ($('#email').length > 0) {
+            if (user.provider == 'twitter')
+                $('#email').text(user.username);
+            else if (user.provider == 'facebook')
+                $('#email').text(user.displayName);
+            else if (user.provider == 'google')
+                $('#email').text(user.displayName);
+            else if (user.provider == 'password')
+                $('#email').text(user.email);
+        }
+
+    } else {
+        if (location.href.indexOf('/home') > 0)
+            window.location.assign('http://localhost:3000');
+    }
+});
   </script>
-
-  <script src="../scripts/bootstrap.min.js"></script>
 </body>
 </html>
