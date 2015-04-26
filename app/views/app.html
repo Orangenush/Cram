@@ -7,12 +7,12 @@
   <link rel="stylesheet" href="../styles/bootstrap.min.css">
   <link rel="stylesheet" href="../styles/style.css">
   <script src="../scripts/jquery.min.js"></script>
+  <script src="../scripts/jquery.cookie.js"></script>
   <script src="../scripts/bootstrap.min.js"></script>
   <script src="../scripts/angular.min.js"></script>
   <script src="../scripts/angular-route.min.js"></script>
   <script src="../scripts/angular-resource.min.js"></script>
   <script src="../scripts/firebase.js"></script>
-  <script src="../scripts/firebase-simple-login.js"></script>
   <script>
     var nw = require('nw.gui');
     var win = nw.Window.get();
@@ -35,24 +35,34 @@
       <form role="form">
         <div class="form-group">
           <label for="email">Login:</label>
-          <input type="email" class="form-control" name="email" placeholder="Enter login">
+          <input type="email" class="form-control" id="email" placeholder="Enter login">
         </div>
         <div class="form-group">
           <label for="pwd">Password:</label>
-          <input type="password" class="form-control" name="pwd" placeholder="Enter password">
+          <input type="password" class="form-control" id="passw" placeholder="Enter password">
         </div>
         <div class="checkbox">
-          <label><input type="checkbox"> Remember me</label>
+          <label><input type="checkbox" id="rememb"> Remember me</label>
         </div>
         <div class="reg-log-buttons">
-          <button type="submit" class="btn btn-default">Register</button>
-          <button type="submit" class="btn btn-default" id='subm'>Login</button>
+          <button type="button" class="btn btn-default" onclick="register()">Register</button>
+          <button type="button" class="btn btn-default" onclick="login()">Login</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
+    var emailField = $('#email');
+    var passwordField = $('#passw');
+
+    $( document ).ready(function() {
+      $('#rememb').prop({"checked" : true})
+
+      emailField.val($.cookie("email"))
+      passwordField.val($.cookie("passw"))
+    });
+
     document.getElementById('windowControlMinimize').onclick = function()
     {
         win.minimize();
@@ -63,53 +73,38 @@
         win.close();
     };
 
-    /*document.getElementById('windowControlMaximize').onclick = function()
-    {
-        if (win.isMaximized)
-            win.unmaximize();
-        else
-            win.maximize();
-    };
+    var myRef = new Firebase('https://cram.firebaseio.com/');
 
-    win.on('maximize', function(){
-        win.isMaximized = true;
-    });
-
-    win.on('unmaximize', function(){
-        win.isMaximized = false;
-    });*/
-
-    var myRef = new Firebase("https://cram.firebaseio.com");
-    var auth = new FirebaseSimpleLogin(myRef, function(error, user) {
-    if (error) {
-        if (error.code == 'INVALID_EMAIL') {
-            alert('Please enter a valid email address');
-        } else if (error.code == 'INVALID_PASSWORD' || error.code == 'INVALID_USER') {
-            alert('Invalid Email or Password');
+    function register() {
+      myRef.createUser({
+        email    : emailField.val(),
+        password : emailField.val(),
+      }, function(error, userData) {
+        if (error) {
+          alert("Error creating user:" + error);
         } else {
-            alert("Something went wrong");
+
         }
-    } else if (user) {
-
-        if (location.href.indexOf('/home') < 0)
-            window.location.assign('http://localhost:3000/home');
-
-        if ($('#email').length > 0) {
-            if (user.provider == 'twitter')
-                $('#email').text(user.username);
-            else if (user.provider == 'facebook')
-                $('#email').text(user.displayName);
-            else if (user.provider == 'google')
-                $('#email').text(user.displayName);
-            else if (user.provider == 'password')
-                $('#email').text(user.email);
-        }
-
-    } else {
-        if (location.href.indexOf('/home') > 0)
-            window.location.assign('http://localhost:3000');
+      });
     }
-});
+
+    function login() {
+      myRef.authWithPassword({
+        email    : emailField.val(),
+        password : emailField.val(),
+      }, function(error, authData) {
+        if (error) {
+          alert("Login Failed!" + error);
+        } else {
+          if ($('#rememb').prop("checked") && $.cookie("email") !== emailField.val()) {
+            $.cookie("email", emailField.val(), { expires: 14 });
+            $.cookie("passw", passwordField.val(), { expires: 14 });
+          } else {
+            alert('hello');
+          }
+        }
+      });
+    }
   </script>
 </body>
 </html>

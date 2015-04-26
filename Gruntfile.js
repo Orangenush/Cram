@@ -13,7 +13,7 @@ module.exports = function(grunt) {
     nodewebkit: {
       options: {
         platforms: ['win'],
-        buildDir: './build',
+        buildDir: '../build',
       },
       src: './app/**/*'
     },
