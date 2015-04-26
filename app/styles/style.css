@@ -3,6 +3,30 @@
   src: url(../fonts/PoiretOne-Regular.ttf);
 }
 
+#windowControlClose{
+  background-color: #c0392b;
+}
+#windowControlClose:hover{
+  background-color: #e74c3c;
+  cursor: pointer;
+}
+
+#windowControlMaximize{
+  background-color: #f39c12;
+}
+#windowControlMaximize:hover{
+  background-color: #f1c40f;
+  cursor: pointer;
+}
+
+#windowControlMinimize{
+  background-color: #27ae60;
+}
+#windowControlMinimize:hover{
+  background-color: #2ecc71;
+  cursor: pointer;
+}
+
 header{
   margin-top: 0;
   width: 100%;
@@ -59,26 +83,8 @@ header>ul>li>div{
   margin-left: 60px;
 }
 
-#windowControlClose{
-  background-color: #c0392b;
-}
-#windowControlClose:hover{
-  background-color: #e74c3c;
-  cursor: pointer;
-}
-
-#windowControlMaximize{
-  background-color: #f39c12;
-}
-#windowControlMaximize:hover{
-  background-color: #f1c40f;
-  cursor: pointer;
-}
-
-#windowControlMinimize{
-  background-color: #27ae60;
-}
-#windowControlMinimize:hover{
-  background-color: #2ecc71;
-  cursor: pointer;
+.log {
+  font-size: 12pt;
+  color: #d3422b;
+  margin-top: 60px;
 }

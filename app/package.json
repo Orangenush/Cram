@@ -1,6 +1,6 @@
 {
   "name": "Cram",
-  "main": "views/app.html",
+  "main": "views/start.html",
   "version": "0.1.0",
   "window": {
     "title": "Cram",
