@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Cram</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../styles/bootstrap.min.css">
+  <link rel="stylesheet" href="../styles/style.css">
+  <script src="../scripts/jquery.min.js"></script>
+  <script src="../scripts/jquery.cookie.js"></script>
+  <script src="../scripts/bootstrap.min.js"></script>
+  <script src="../scripts/angular.min.js"></script>
+  <script src="../scripts/angular-route.min.js"></script>
+  <script src="../scripts/angular-resource.min.js"></script>
+  <script src="../scripts/firebase.js"></script>
+  <script>
+    var nw = require('nw.gui');
+    var win = nw.Window.get();
+    win.isMaximized = false;
+  </script>
+</head>
+<body>
+  <header>
+    <ul>
+      <li><div id='windowControlMinimize'></div></li>
+      <!--<li><div id='windowControlMaximize'></div></li>-->
+      <li><div id='windowControlClose'   ></div></li>
+    </ul>
+  </header>
+
+  <script>
+    document.getElementById('windowControlMinimize').onclick = function()
+    {
+        win.minimize();
+    };
+
+    document.getElementById('windowControlClose').onclick = function()
+    {
+        win.close();
+    };
+  </script>
+</body>
+</html>

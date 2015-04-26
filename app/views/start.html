@@ -156,7 +156,9 @@
         name: authData.password.email.replace(/@.*/, '')
       });
 
-      win.open('app.html');
+      window.location.href = 'app.html';
+      win.resizeTo(800,500);
+      win.setPosition('center');
     }
 
     function errlog(data) {
