@@ -3,40 +3,50 @@
 <head>
   <title>Cram</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../styles/bootstrap.min.css">
   <link rel="stylesheet" href="../styles/style.css">
-  <script src="../scripts/jquery.min.js"></script>
-  <script src="../scripts/jquery.cookie.js"></script>
-  <script src="../scripts/bootstrap.min.js"></script>
-  <script src="../scripts/angular.min.js"></script>
-  <script src="../scripts/angular-route.min.js"></script>
-  <script src="../scripts/angular-resource.min.js"></script>
-  <script src="../scripts/firebase.js"></script>
-  <script>
-    var nw = require('nw.gui');
-    var win = nw.Window.get();
-    win.isMaximized = false;
-  </script>
+  <link rel="import" href="header.html">
 </head>
 <body>
+
   <header>
     <ul>
       <li><div id='windowControlMinimize'></div></li>
-      <!--<li><div id='windowControlMaximize'></div></li>-->
       <li><div id='windowControlClose'   ></div></li>
     </ul>
   </header>
 
-  <script>
-    document.getElementById('windowControlMinimize').onclick = function()
-    {
-        win.minimize();
-    };
+  <div class="block chat">
+    <div class="ms-show" id="ms-show">
 
-    document.getElementById('windowControlClose').onclick = function()
-    {
-        win.close();
+    </div>
+    <input type="text" class="form-control ms-field" id="ms-field" placeholder="Enter message">
+  </div>
+
+  <script>
+    var myRef = new Firebase('https://cram.firebaseio.com/');
+    var authData = myRef.getAuth();
+
+    var myname;
+    myRef.child("users").child(authData.uid).once("value", function(snap) {
+      myname = snap.val().name;
+    });
+
+    $('#ms-field').keypress(function (e) {
+      if (e.keyCode == 13) {
+        var text = $('#ms-field').val();
+        myRef.child("chat").push({user: authData.uid, message: text, timestamp: Firebase.ServerValue.TIMESTAMP});
+        $('#ms-field').val('');
+      }
+    });
+
+    myRef.child('chat').on('child_added', function(snapshot){
+      var message = snapshot.val();
+      displayChatMessage(message.user,message.message);
+    });
+
+    function displayChatMessage(name, text) {
+      $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#ms-show'));
+      $('#ms-show')[0].scrollTop = $('#ms-show')[0].scrollHeight;
     };
   </script>
 </body>
