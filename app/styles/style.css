@@ -1,6 +1,38 @@
 @font-face {
+	font-family: 'icomoon';
+	src:url('../icons/icomoon.eot');
+	src:url('../icons/icomoon.eot') format('embedded-opentype'),
+		url('../icons/icomoon.woff') format('woff'),
+		url('../icons/icomoon.ttf') format('truetype'),
+		url('../icons/icomoon.svg') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
   font-family: 'Poiret One';
   src: url(../fonts/PoiretOne-Regular.ttf);
+}
+
+i {
+	font-family: 'icomoon';
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+.icon-cross:before {
+	content: "\ea0f";
+}
+
+.icon-checkmark:before {
+	content: "\ea10";
 }
 
 #windowControlClose{
@@ -101,16 +133,71 @@ header>ul>li>div{
   width: 275px;
   height: 403px;
   top: 39px;
-  left: 17px;
+  right: 17px;
   background-color: #dfdfdf;
 }
 
 .ms-show {
   box-shadow: 3px 3px 0px 0px #949494;
   height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px;
+  hyphens: auto;
 }
 
 input[type="text"].ms-field{
   border-radius: 0;
   box-shadow: 3px 3px 0px 0px #949494;
+}
+
+.check {
+  text-align: center;
+  box-shadow: 3px 3px 0px 0px #b4b2b2;
+  width: 160px;
+  height: 140px;
+  top: 39px;
+  left: 17px;
+  color: #151515;
+  background-color: #ededed;
+}
+
+#io-check {
+  margin-top: 16px;
+  margin-left: 40px;
+  height: 80px;
+  width: 80px;
+  display: block;
+  border-radius: 50%;
+  text-align: center;
+  color: #FFF;
+  transition: all 0.3s;
+}
+
+.i-check {
+  box-shadow: 2px 2px 0px 0px #27ae60;
+  background-color: #2ecc71;
+  padding-top: 12px;
+  padding-left: 2px;
+  font-size: 49px;
+}
+
+.i-check:hover {
+  background-color: #27ae60;
+}
+
+.o-check {
+  box-shadow: 2px 2px 0px 0px #c0392b;
+  background-color: #e74c3c;
+  padding-top: 17px;
+  font-size: 40px;
+}
+
+.o-check:hover {
+  background-color: #c0392b;
+}
+
+#tx-check {
+  font-family: 'Poiret One', cursive;
+  font-size: 18pt;
 }

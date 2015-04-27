@@ -87,7 +87,8 @@
               }
 
               myRef.child("users").child(authData.uid).set({
-                name: authData.password.email.replace(/@.*/, '')
+                name: authData.password.email.replace(/@.*/, ''),
+                checked : false
               });
 
               $('#reg').removeAttr("disabled");

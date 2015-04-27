@@ -17,24 +17,31 @@
 
   <div class="block chat">
     <div class="ms-show" id="ms-show">
-
     </div>
     <input type="text" class="form-control ms-field" id="ms-field" placeholder="Enter message">
   </div>
 
+  <div class="block check">
+    <div id="io-check" class="i-check" onclick="toggle_io()">
+      <i class="icon-checkmark"></i>
+    </div>
+    <div id="tx-check">Check in </div>
+  </div>
+
   <script>
+    var CHECKED = false;
     var myRef = new Firebase('https://cram.firebaseio.com/');
     var authData = myRef.getAuth();
 
     var myname;
-    myRef.child("users").child(authData.uid).once("value", function(snap) {
+    myRef.child('users').child(authData.uid).once("value", function(snap) {
       myname = snap.val().name;
     });
 
     $('#ms-field').keypress(function (e) {
-      if (e.keyCode == 13) {
-        var text = $('#ms-field').val();
-        myRef.child("chat").push({user: authData.uid, message: text, timestamp: Firebase.ServerValue.TIMESTAMP});
+      var text = $('#ms-field').val();
+      if (e.keyCode == 13 && text.length > 0) {
+        myRef.child("chat").push({user: myname, message: text, timestamp: Firebase.ServerValue.TIMESTAMP});
         $('#ms-field').val('');
       }
     });
@@ -48,6 +55,24 @@
       $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#ms-show'));
       $('#ms-show')[0].scrollTop = $('#ms-show')[0].scrollHeight;
     };
+
+    function toggle_io() {
+      var io_check = $('#io-check');
+      var io_check_text = $('#tx-check');
+      if (CHECKED) {
+        io_check.removeClass('i-check').addClass('o-check');
+        io_check.html('<i class="icon-cross"></i>');
+        myRef.child('users').child(authData.uid).update({checked: true});
+        io_check_text.text('Check out');
+      } else {
+        io_check.removeClass('o-check').addClass('i-check');
+        io_check.html('<i class="icon-checkmark"></i>');
+        myRef.child('users').child(authData.uid).update({checked: false});
+        io_check_text.text('Check in');
+      }
+      CHECKED = !CHECKED;
+    }
+
   </script>
 </body>
 </html>
