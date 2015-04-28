@@ -45,22 +45,22 @@
     var myRef = new Firebase('https://cram.firebaseio.com/');
     var authData = myRef.getAuth();
 
-    var emailField = $('#email');
-    var passwordField = $('#passw');
-
+    // Setting cookies and checking "Remember me"
     $( document ).ready(function() {
       $('#rememb').prop({"checked" : true})
 
-      emailField.val($.cookie("email"))
-      passwordField.val($.cookie("passw"))
+      $('#email').val($.cookie("email"))
+      $('#passw').val($.cookie("passw"))
     });
 
     function register() {
       errlog('');
       $('#reg').attr("disabled", "disabled");
       $('#log').attr("disabled", "disabled");
-      var email = emailField.val();
-      var passw = passwordField.val()
+      $('#email').attr("disabled", "disabled");
+      $('#passw').attr("disabled", "disabled");
+      var email = $('#email').val() + '@cram.com';
+      var passw = $('#passw').val()
       myRef.createUser({
         email    : email,
         password : passw,
@@ -79,34 +79,25 @@
               $('#reg').removeAttr("disabled");
               $('#log').removeAttr("disabled");
             } else {
-              if ($('#rememb').prop("checked") && $.cookie("email") !== emailField.val()) {
-                $.cookie("email", null);
-                $.cookie("passw", null);
-                $.cookie("email", email, { expires: 14 });
-                $.cookie("passw", passw, { expires: 14 });
-              }
-
-              myRef.child("users").child(authData.uid).set({
-                name: authData.password.email.replace(/@.*/, ''),
-                checked : false
+              login(function(){
+                myRef.child('users').child(authData.uid).set({
+                  name: authData.password.email.replace(/@.*/, '')
+                });
               });
-
-              $('#reg').removeAttr("disabled");
-              $('#log').removeAttr("disabled");
-              errlog('');
-              onLogin();
             }
           });
         }
       });
     }
 
-    function login() {
+    function login(callBack) {
       errlog('');
       $('#reg').attr("disabled", "disabled");
       $('#log').attr("disabled", "disabled");
-      var email = emailField.val();
-      var passw = passwordField.val()
+      $('#email').attr("disabled", "disabled");
+      $('#passw').attr("disabled", "disabled");
+      var email = $('#email').val() + '@cram.com';
+      var passw = $('#passw').val()
       myRef.authWithPassword({
         email    : email,
         password : passw,
@@ -116,22 +107,26 @@
           $('#reg').removeAttr("disabled");
           $('#log').removeAttr("disabled");
         } else {
-          if ($('#rememb').prop("checked")) {
-            $.cookie("email", null);
-            $.cookie("passw", null);
-            $.cookie("email", email, { expires: 14 });
-            $.cookie("passw", passw, { expires: 14 });
-          }
-
-          $('#reg').removeAttr("disabled");
-          $('#log').removeAttr("disabled");
-          errlog('');
-          onLogin();
+          callBack();
+          onLogin(email, passw);
         }
       });
     }
 
-    function onLogin(){
+    function onLogin(email, passw){
+      if ($('#rememb').prop("checked")) {
+        $.cookie("email", null);
+        $.cookie("passw", null);
+        $.cookie("email", email.replace(/@.*/, ''), { expires: 14 });
+        $.cookie("passw", passw, { expires: 14 });
+      }
+
+      $('#reg').removeAttr("disabled");
+      $('#log').removeAttr("disabled");
+      $('#email').removeAttr("disabled");
+      $('#passw').removeAttr("disabled");
+      errlog('');
+
       window.location.href = 'app.html';
       win.resizeTo(800,500);
       win.setPosition('center');
@@ -140,6 +135,17 @@
     function errlog(data) {
       $('#errlog').html(data);
     }
+
+    /* GUI */
+    document.getElementById('windowControlMinimize').onclick = function()
+    {
+        win.minimize();
+    };
+
+    document.getElementById('windowControlClose').onclick = function()
+    {
+        win.close();
+    };
   </script>
 </body>
 </html>

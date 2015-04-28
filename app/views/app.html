@@ -16,28 +16,65 @@
   </header>
 
   <div class="block chat">
-    <div class="ms-show" id="ms-show">
-    </div>
+    <ul id="ms-show"></ul>
     <input type="text" class="form-control ms-field" id="ms-field" placeholder="Enter message">
   </div>
 
   <div class="block check">
-    <div id="io-check" class="i-check" onclick="toggle_io()">
+    <div id="io-check" class="i-check">
       <i class="icon-checkmark"></i>
     </div>
     <div id="tx-check">Check in </div>
   </div>
 
+  <div class="block online">
+    <div class="in-game">People in game</div>
+    <ul id="ol-show"></ul>
+  </div>
+
   <script>
-    var CHECKED = false;
+    var CHECKED = false; // The state of "check"
     var myRef = new Firebase('https://cram.firebaseio.com/');
     var authData = myRef.getAuth();
 
+    // Getting name as global
     var myname;
     myRef.child('users').child(authData.uid).once("value", function(snap) {
       myname = snap.val().name;
     });
 
+    // This piece of code is responsible for check in/out system
+    $(document).ready(function(){
+      $('#io-check').click(function(){
+        var io_check = $('#io-check');
+        var io_check_text = $('#tx-check');
+        if (!CHECKED) {
+          io_check.removeClass('i-check').addClass('o-check');
+          io_check.html('<i class="icon-cross"></i>');
+          checkID = myRef.child('checked').push({name: myname});
+          io_check_text.text('Check out');
+        } else {
+          io_check.removeClass('o-check').addClass('i-check');
+          io_check.html('<i class="icon-checkmark"></i>');
+          myRef.child('checked').child(checkID.key()).remove();
+          io_check_text.text('Check in');
+        }
+        CHECKED = !CHECKED;
+      });
+    });
+
+    myRef.child('checked').on('child_added', function(snapshot){
+      var user = snapshot.val();
+      $('#ol-show').append($('<li id="usr-' + user.name + '">').html(user.name));
+      $('#ol-show')[0].scrollTop = $('#ol-show')[0].scrollHeight;
+    });
+
+    myRef.child('checked').on('child_removed', function(snapshot){
+      var user = snapshot.val();
+      $('#usr-' + user.name).remove();
+    });
+
+    // And this shit is for chat input handling
     $('#ms-field').keypress(function (e) {
       var text = $('#ms-field').val();
       if (e.keyCode == 13 && text.length > 0) {
@@ -46,33 +83,35 @@
       }
     });
 
-    myRef.child('chat').on('child_added', function(snapshot){
+    var query = myRef.child('chat').orderByChild('timestamp').startAt(new Date().getTime());
+    query.on('child_added', function(snapshot){
       var message = snapshot.val();
-      displayChatMessage(message.user,message.message);
+      displayChatMessage(message.user,message.message,message.timestamp);
     });
 
-    function displayChatMessage(name, text) {
-      $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#ms-show'));
+    function displayChatMessage(name, text, timestamp) {
+      $('#ms-show').append($('<li id="usr-' + timestamp + '">').html('<div class="name">' + name + '</div> : ' + text));
       $('#ms-show')[0].scrollTop = $('#ms-show')[0].scrollHeight;
     };
 
-    function toggle_io() {
-      var io_check = $('#io-check');
-      var io_check_text = $('#tx-check');
-      if (CHECKED) {
-        io_check.removeClass('i-check').addClass('o-check');
-        io_check.html('<i class="icon-cross"></i>');
-        myRef.child('users').child(authData.uid).update({checked: true});
-        io_check_text.text('Check out');
-      } else {
-        io_check.removeClass('o-check').addClass('i-check');
-        io_check.html('<i class="icon-checkmark"></i>');
-        myRef.child('users').child(authData.uid).update({checked: false});
-        io_check_text.text('Check in');
-      }
-      CHECKED = !CHECKED;
-    }
+    // GUI
+    document.getElementById('windowControlMinimize').onclick = function()
+    {
+        win.minimize();
+    };
 
+    win.on('close', function() {
+      this.hide();
+      if(CHECKED){
+        myRef.child('checked').child(checkID.key()).remove();
+      }
+      this.close(true);
+    });
+
+    document.getElementById('windowControlClose').onclick = function()
+    {
+        win.close();
+    };
   </script>
 </body>
 </html>

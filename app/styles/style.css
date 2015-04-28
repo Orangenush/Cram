@@ -35,6 +35,23 @@ i {
 	content: "\ea10";
 }
 
+::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb
+{
+	background-color: #545454;
+}
+
 #windowControlClose{
   background-color: #c0392b;
 }
@@ -137,13 +154,33 @@ header>ul>li>div{
   background-color: #dfdfdf;
 }
 
-.ms-show {
+#ms-show {
   box-shadow: 3px 3px 0px 0px #949494;
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 10px;
   hyphens: auto;
+}
+
+#ms-show {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+#ms-show li {
+	padding: 5px 10px;
+}
+
+#ms-show li:nth-child(odd) {
+	background: #eee;
+}
+
+#ms-show .name {
+	font-family: Tahoma, Verdana, Segoe, sans-serif;
+	color: #000000;
+	display:inline-block;
 }
 
 input[type="text"].ms-field{
@@ -200,4 +237,32 @@ input[type="text"].ms-field{
 #tx-check {
   font-family: 'Poiret One', cursive;
   font-size: 18pt;
+}
+
+.online {
+  box-shadow: 3px 3px 0px 0px #b4b2b2;
+  width: 160px;
+  height: 285px;
+  bottom: 17px;
+  left: 17px;
+  color: #151515;
+  background-color: #ededed;
+}
+
+.in-game {
+	font-family: 'Poiret One';
+	line-height: 35px;
+	height: 35px;
+	padding-left: 10px;
+	font-size: 14pt;
+	vertical-align: middle;
+	color: #ffffff;
+	background-color: #adadad;
+}
+
+#ol-show { list-style-type: none; margin: 0; padding: 0; }
+#ol-show li { padding: 5px 10px; }
+
+#ol-show li[id^='usr-'] {
+	border-left: 2px solid #adabab;
 }
